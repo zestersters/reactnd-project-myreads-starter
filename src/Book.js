@@ -5,14 +5,14 @@ import './App.css'
 function Book(props) {
     const {book, onChange} = props
     const handleChange = (e) => {
-        onChange(e, book.title)
+        onChange(e, book)
     }
     return (
         <div className="book">
             <div className="book-top">
-                <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: book.backgroundImage }}></div>
+                <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})`}}></div>
                 <div className="book-shelf-changer">
-                    <select value={book.status} onChange={handleChange}>
+                    <select value={book.shelf} onChange={handleChange}>
                         <option value="move" disabled>Move to...</option>
                         <option value="currentlyReading">Currently Reading</option>
                         <option value="wantToRead">Want to Read</option>
@@ -22,7 +22,7 @@ function Book(props) {
                 </div>
             </div>
             <div className="book-title">{book.title}</div>
-            <div className="book-authors">{book.author}</div>
+            <div className="book-authors">{book.authors ? book.authors.join('') : ''}</div>
         </div>
     );
 }

@@ -1,9 +1,11 @@
 import React from 'react'
 import './App.css'
-import {getAll, search} from "./BooksAPI";
+import {getAll, search, update} from "./BooksAPI";
 import Book from "./Book";
 import Shelf from "./Shelf";
 import SearchPage from "./SearchPage";
+import {Link, Route} from "react-router-dom";
+import add from './icons/add.svg'
 
 class BooksApp extends React.Component {
     constructor(props) {
@@ -30,25 +32,26 @@ class BooksApp extends React.Component {
 
         return (
             <div className="app">
-                {this.state.showSearchPage ? (
+                <Route exact path="/search" render={() => (
                     <SearchPage children={results} newQuery={this.getNewQuery} handleClick={this.handleExitClick}/>
-                ) : (
-                    <div className="list-books">
-                        <div className="list-books-title">
-                            <h1>MyReads</h1>
-                        </div>
-                        <div className="list-books-content">
-                            <div>
-                                <Shelf children={currentlyReadingShelf}  shelf="Currently Reading"/>
-                                <Shelf children={wantToReadShelf} shelf="Want To Read"/>
-                                <Shelf children={readShelf} shelf="Read"/>
-                            </div>
-                        </div>
-                        <div className="open-search">
-                            <button onClick={() => this.setState({showSearchPage: true})}>Add a book</button>
+                    )}/>
+                 <Route exact path="/" render={() => (
+                <div className="list-books">
+                    <div className="list-books-title">
+                        <h1>MyReads</h1>
+                    </div>
+                    <div className="list-books-content">
+                        <div>
+                            <Shelf children={currentlyReadingShelf}  shelf="Currently Reading"/>
+                            <Shelf children={wantToReadShelf} shelf="Want To Read"/>
+                            <Shelf children={readShelf} shelf="Read"/>
                         </div>
                     </div>
-                )}
+                    <div >
+                        <Link to="/search" className="open-search" >Add a book</Link>
+                    </div>
+                </div>
+                )}/>
             </div>
         )
     }
@@ -62,21 +65,22 @@ class BooksApp extends React.Component {
                 if (queries.length > 0) {
                     queries.forEach(query => {
                         const book = books.find(book => book.id === query.id)
-                        if (book) {
-                            query.shelf = book.shelf
-                        }
+                        book ? query.shelf = book.shelf : query.shelf = 'none'
                     })
                     this.setState({queryResults: queries})
                 } else {
                     this.setState({queryResults: []})
                 }
             })
+        } else {
+            this.setState({queryResults: []})
         }
     }
 
     onChange = (e, selection) => {
         const {books} =this.state
         selection.shelf = e.target.value
+        update(selection, e.target.value)
         const index = books.findIndex(book => book.title === selection.title)
         index > -1 ? books[index].shelf = e.target.value : books.push(selection)
         this.setState({books: books})

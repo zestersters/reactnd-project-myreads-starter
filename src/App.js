@@ -5,7 +5,6 @@ import Book from "./Book";
 import Shelf from "./Shelf";
 import SearchPage from "./SearchPage";
 import {Link, Route} from "react-router-dom";
-import add from './icons/add.svg'
 
 class BooksApp extends React.Component {
     constructor(props) {
@@ -33,7 +32,7 @@ class BooksApp extends React.Component {
         return (
             <div className="app">
                 <Route exact path="/search" render={() => (
-                    <SearchPage children={results} newQuery={this.getNewQuery} handleClick={this.handleExitClick}/>
+                    <SearchPage children={results} newQuery={this.getNewQuery} />
                     )}/>
                  <Route exact path="/" render={() => (
                 <div className="list-books">
@@ -48,7 +47,7 @@ class BooksApp extends React.Component {
                         </div>
                     </div>
                     <div >
-                        <Link to="/search" className="open-search" >Add a book</Link>
+                        <Link to="/search" onClick={this.clearQuery} className="open-search" >Add a book</Link>
                     </div>
                 </div>
                 )}/>
@@ -56,7 +55,7 @@ class BooksApp extends React.Component {
         )
     }
 
-    handleExitClick = () => this.setState({showSearchPage: false, queryResults: []})
+    clearQuery = () => this.setState({ queryResults: []})
 
     getNewQuery = (e) => {
         const {books} = this.state
@@ -65,8 +64,7 @@ class BooksApp extends React.Component {
                 if (queries.length > 0) {
                     queries.forEach(query => {
                         const book = books.find(book => book.id === query.id)
-                        book ? query.shelf = book.shelf : query.shelf = 'none'
-                    })
+                        book ? query.shelf = book.shelf : query.shelf = 'none'})
                     this.setState({queryResults: queries})
                 } else {
                     this.setState({queryResults: []})
@@ -78,12 +76,9 @@ class BooksApp extends React.Component {
     }
 
     onChange = (e, selection) => {
-        const {books} =this.state
         selection.shelf = e.target.value
-        update(selection, e.target.value)
-        const index = books.findIndex(book => book.title === selection.title)
-        index > -1 ? books[index].shelf = e.target.value : books.push(selection)
-        this.setState({books: books})
+       update(selection, e.target.value).then(() =>
+        getAll().then((value) => this.setState({books: value})))
     }
 }
 export default BooksApp

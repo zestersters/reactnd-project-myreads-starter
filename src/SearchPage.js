@@ -10,7 +10,7 @@ SearchPage.propTypes = {
 };
 
 function SearchPage(props) {
-    const {children, handleClick, newQuery} = props
+    const {children, newQuery} = props
     return (
         <>
         <div className="search-books">

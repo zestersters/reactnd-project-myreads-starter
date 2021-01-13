@@ -4,7 +4,6 @@ import './App.css'
 import {Link} from "react-router-dom";
 
 SearchPage.propTypes = {
-    handleClick: PropTypes.func.isRequired,
     newQuery: PropTypes.func.isRequired,
     children: PropTypes.array.isRequired
 };
